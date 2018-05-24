@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"flag"
+	"./testPackage"
 )
 
 // 声明const常量
@@ -73,8 +74,45 @@ func testFlag() {
 	fmt.Println(*n)
 }
 
+// 相当于C/C++的typedef
+type Integer int
+// 可以为新定义的类型定义关联到该类型的函数
+func (i Integer) toInt() int { return int(i) }
+
+func assigement() {
+	// golang 支持自增，自减语句，它不是表达式，不能用它来赋值，且只能在后面
+	x := 1
+	x++
+
+	y := 2
+	y--
+	// 与python类似，golang支持元组赋值
+	x, y = y, x
+
+	// 不同类型自己的变量不能进行赋值或算数逻辑运算，即使是使用type重新定义的类型，可以使用T()进行类型转换
+	// 类型转换在编译阶段执行，若不能转换则报错，任何情况下都不会在运行时发生转换失败的错误
+	 var t2 Integer = Integer(x)
+	 // 调用关联的函数
+	 y = t2.toInt()
+}
+
+func pack() {
+	// 调用自定义的包函数
+	ret := testPackage.Add(1, 2)
+	fmt.Println(ret, testPackage.Number[1], testPackage.String[3])
+
+	for _, x := range testPackage.Number {
+		// 语句块内部可以定义 与for循环隐式初始化相同的变量，此时新定义的变量作用域在语句块内
+		x := x*10
+		fmt.Print(x)
+	}
+}
+
+
 func main()  {
 	decl()
 	point()
 	testFlag()
+	assigement()
+	pack()
 }
